@@ -39,6 +39,8 @@
   <ItemGroup>
     <Compile Include="Arc.cs" />
     <Compile Include="Circle.cs" />
+    <Compile Include="Clipping\GreinerHormann\Clipper.cs" />
+    <Compile Include="Clipping\GreinerHormann\Vertex.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="Matrix.cs" />

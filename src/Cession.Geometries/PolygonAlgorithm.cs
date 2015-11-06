@@ -47,6 +47,33 @@ namespace Cession.Geometries
         {
             return polygon[(index + 1) % polygon.Count];
         }
+
+        public static Rect GetBounds(IList<Point> polygon)
+        {
+            if (null == polygon)
+                throw new ArgumentNullException();
+            if (polygon.Count < 3)
+                throw new ArgumentException("polygon");
+
+            double left = double.MaxValue;
+            double right = double.MinValue;
+            double top = double.MaxValue;
+            double bottom = double.MinValue;
+
+            for (int i = 0; i < polygon.Count; i++)
+            {
+                left = Math.Min(polygon[i].X, left);
+                right = Math.Max(polygon[i].X, right);
+
+                top = Math.Min(polygon[i].Y, top);
+                bottom = Math.Max(polygon[i].Y, bottom);
+            }
+
+            if (left == right || top == bottom)
+                return Rect.Empty;
+
+            return Rect.FromLTRB(left, top, right, bottom);
+        }
     }
 }
 

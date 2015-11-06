@@ -40,7 +40,7 @@ namespace Cession.Geometries
                 throw new ArgumentException ();
 
             return value >= Math.Min (x, y) - Math.Abs (delta) &&
-            value <= Math.Max (x, y) + Math.Abs (delta);
+                value <= Math.Max (x, y) + Math.Abs (delta);
         }
     }
 }

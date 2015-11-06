@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Cession.Geometries;
+using Cession.Geometries.Clipping.GreinerHormann;
 
 namespace GeometryTest
 {
@@ -21,8 +22,15 @@ namespace GeometryTest
 			var y = random.NextDouble ();
 			return new Point (x, y);
 		}
-			
-		public static Point CreateRandomPoint(double maxValue){
+
+        public static Vertex CreateRandomVertex()
+        {
+            var x = random.NextDouble();
+            var y = random.NextDouble();
+            return new Vertex() { X = x, Y = y };
+        }
+
+        public static Point CreateRandomPoint(double maxValue){
 			var x = random.NextDouble () * maxValue;
 			var y = random.NextDouble () * maxValue;
 			return new Point (x, y);

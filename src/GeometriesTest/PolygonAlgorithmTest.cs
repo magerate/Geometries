@@ -24,7 +24,6 @@ namespace GeometryTest
             Assert.True(PolygonAlgorithm.Contains(polygon, new Point(0.8, 0.8)));
             Assert.True(PolygonAlgorithm.Contains(polygon, new Point(-0.9, -0.9)));
 
-
             Assert.False(PolygonAlgorithm.Contains(polygon, new Point(0.8, 0.9)));
             Assert.False(PolygonAlgorithm.Contains(polygon, new Point(0.8, -1.1)));
         }

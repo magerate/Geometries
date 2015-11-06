@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="CircleTests.cs" />
     <Compile Include="LineHelper.cs" />
+    <Compile Include="ClipperTest.cs" />
     <Compile Include="PolygonAlgorithmTest.cs" />
     <Compile Include="LineTest.cs" />
     <Compile Include="PointTests.cs" />
