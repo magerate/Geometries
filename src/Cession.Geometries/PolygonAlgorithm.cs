@@ -17,7 +17,8 @@ namespace Cession.Geometries
             return windNumber != 0;
         }
 
-        //reference http://geomalgorithms.com/a03-_inclusion.html
+        //reference 
+        //http://geomalgorithms.com/a03-_inclusion.html
         public static int GetWindNumber (IList<Point> polygon, Point point)
         {
             int windNumber = 0;
@@ -26,20 +27,25 @@ namespace Cession.Geometries
             { 
                 if (polygon [i].Y <= point.Y)
                 {         
-                    if (polygon [i + 1].Y > point.Y)
+                    if (polygon.NextPoint(i).Y > point.Y)
                     {
-                        if (Triangle.GetSignedArea (polygon [i], polygon [i + 1], point) < 0)
+                        if (Triangle.GetSignedArea (polygon [i], polygon.NextPoint(i), point) > 0)
                             windNumber++;
                     }
                 }
                 else
                 {
-                    if (polygon[i + 1].Y <= point.Y)
-                        if (Triangle.GetSignedArea (polygon [i], polygon [i + 1], point) < 0)
+                    if (polygon.NextPoint(i).Y <= point.Y)
+                        if (Triangle.GetSignedArea (polygon [i], polygon.NextPoint(i), point) < 0)
                         windNumber--;           
                 }
             }
             return windNumber;
+        }
+
+        private static Point NextPoint(this IList<Point> polygon,int index)
+        {
+            return polygon[(index + 1) % polygon.Count];
         }
     }
 }
