@@ -33,8 +33,9 @@ namespace Cession.Geometries
                     }
                 }
                 else
-                {                        
-                    if (Triangle.GetSignedArea (polygon [i], polygon [i + 1], point) < 0)
+                {
+                    if (polygon[i + 1].Y <= point.Y)
+                        if (Triangle.GetSignedArea (polygon [i], polygon [i + 1], point) < 0)
                         windNumber--;           
                 }
             }
