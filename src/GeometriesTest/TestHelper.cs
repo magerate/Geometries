@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
 using NUnit.Framework;
 using Cession.Geometries;
 using Cession.Geometries.Clipping.GreinerHormann;
@@ -17,7 +20,17 @@ namespace GeometryTest
 			return random.NextDouble ();
 		}
 
-		public static Point CreateRandomPoint(){
+        public static int Next()
+        {
+            return random.Next();
+        }
+
+        public static int Next(int min,int max)
+        {
+            return random.Next(min,max);
+        }
+
+        public static Point CreateRandomPoint(){
 			var x = random.NextDouble ();
 			var y = random.NextDouble ();
 			return new Point (x, y);
@@ -35,6 +48,17 @@ namespace GeometryTest
 			var y = random.NextDouble () * maxValue;
 			return new Point (x, y);
 		}
+
+        public static Point[] CreateRandomPointArray()
+        {
+            int count = Next(100, 200);
+            Point[] ps = new Point[count];
+            for (int i = 0; i < count; i++)
+            {
+                ps[i] = CreateRandomPoint();
+            }
+            return ps;
+        }
 
 		public static void AlmostEqual(double left,double right){
 			AlmostEqual (left, right, 1e-5);
@@ -58,6 +82,21 @@ namespace GeometryTest
 			Assert.AreEqual (p1.X, p2.X);
 			Assert.AreEqual (p1.Y, p2.Y);
 		}
+
+        public static Point[] ToPointArray(this List<Vertex> polygon)
+        {
+            return polygon.Select(p => new Point(p.X, p.Y)).ToArray();
+        }
+
+        public static void PolygonAreEqual(Point[] p1,Point[] p2)
+        {
+            Assert.AreEqual(p1.Length, p2.Length);
+
+            for (int i = 0; i < p1.Length; i++)
+            {
+                PointAreEqual(p1[i], p2[i]);
+            }
+        }
 
 	}
 }

@@ -85,7 +85,7 @@ namespace GeometryTest
 				}
 			};
 
-			test.RunBatch (1000000);
+			test.RunBatch ();
 		}
 
 		[Test]
@@ -130,7 +130,7 @@ namespace GeometryTest
 				}
 			};
 
-			test.RunBatch (100000);
+			test.RunBatch ();
 		}
 
         [Test]
@@ -164,7 +164,7 @@ namespace GeometryTest
                     TestHelper.AlmostEqual(d2,d3);
                 }
             };
-            test.RunBatch (100000);
+            test.RunBatch ();
         }
 	}
 }

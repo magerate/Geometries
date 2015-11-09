@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cession.Geometries", "Cessi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometriesTest", "GeometriesTest\GeometriesTest.csproj", "{C6DADA6E-C6CF-4DFD-A2A4-E73FB067B3FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{17C8C5D5-A436-4CFF-9867-BEFE94082034}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C6DADA6E-C6CF-4DFD-A2A4-E73FB067B3FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6DADA6E-C6CF-4DFD-A2A4-E73FB067B3FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6DADA6E-C6CF-4DFD-A2A4-E73FB067B3FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C8C5D5-A436-4CFF-9867-BEFE94082034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C8C5D5-A436-4CFF-9867-BEFE94082034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C8C5D5-A436-4CFF-9867-BEFE94082034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C8C5D5-A436-4CFF-9867-BEFE94082034}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

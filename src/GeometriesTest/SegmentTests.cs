@@ -36,7 +36,7 @@ namespace GeometryTest
 				}
 			};
 
-			test.RunBatch (100000);
+			test.RunBatch ();
 		}
 	}
 }

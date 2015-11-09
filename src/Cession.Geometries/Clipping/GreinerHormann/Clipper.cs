@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Cession.Geometries.Clipping.GreinerHormann
 {
-    using Polygon = System.Collections.Generic.LinkedList<Vertex>;
-    using Node = System.Collections.Generic.LinkedListNode<Vertex>;
-
     public static class VertexHelper
     {
         public static Point ToPoint(this Vertex vertex)
@@ -13,55 +11,151 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             return new Point(vertex.X, vertex.Y);
         }
 
-        public static bool Contains(this Polygon polygon, Vertex point)
+        public static Vertex ToVertex(this Point point)
         {
-            var ps = polygon.Select(p => p.ToPoint()).ToArray();
-            return PolygonAlgorithm.Contains(ps, point.ToPoint());
+            return new Vertex() { X = point.X, Y = point.Y };
+        }
+
+        public static List<Point> ToList(this Vertex vertex)
+        {
+            List<Point> ps = new List<Point>();
+            for (var si = vertex; si != null; si = si.Next == vertex ? null : si.Next)
+            {
+                ps.Add(vertex.ToPoint());
+            }
+            return ps;
+        }
+
+
+        public static Vertex ToLinkList(this Point[] polygon)
+        {
+            Vertex result = null;
+            Vertex current = null;
+            for (int i = 0; i < polygon.Length; i++)
+            {
+                Point p = polygon[i];
+                var v = p.ToVertex();
+                if (current != null) {
+                    current.Next = v;
+                    v.Previous = current;
+                }
+                current = v;
+
+                if (i == 0)
+                    result = v;
+
+                if (i == polygon.Length - 1)
+                    current.Next = result;
+                result.Previous = current;
+            }
+            return result;
         }
     }
 
     //
     public static class Clipper
     {
-        public static Polygon Clip(Polygon subject,Polygon clip)
+        public static List<List<Vertex>> Clip(Vertex subject, Vertex clip)
         {
             //phase 1
-            for (var si = subject.First; si != null; si = si.Next)
+            for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
-                for (var cj = clip.First; cj != null; cj = cj.Next)
+                for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
                 {
                     double a = 0, b = 0;
-                    if (Intersects(si.Value, si.Next.Value, cj.Value, cj.Next.Value, ref a, ref b))
+
+                    if (Intersects(si, si.Next, cj, cj.Next, ref a, ref b))
                     {
-                        Vertex i1 = CreateVertex(si.Value, si.Next.Value, a);
-                        Vertex i2 = CreateVertex(cj.Value, cj.Next.Value, b);
-                        Node n1 = subject.AddAfter(si, i1);
-                        Node n2 = subject.AddAfter(cj, i2);
-                        i1.Neibour = n2;
-                        i2.Neibour = n1;
+                        Vertex i1 = CreateVertex(si, si.Next, a);
+                        Vertex i2 = CreateVertex(cj, cj.Next, b);
+                        i1.Neibour = i2;
+                        i2.Neibour = i1;
+
+                        si.Next.Previous = i1;
+                        si.Next = i1;
+
+                        cj.Next.Previous = i2;
+                        cj.Next = i2;
+
+                        si = i1;
+                        cj = i2;
                     }
-                    if (cj == clip.First)
-                        cj = null;
                 }
-                if (si == subject.First)
-                    si = null;
             }
 
 
             //phase 2
-            Vertex p0 = subject.First.Value;
-            for (var si = subject.First; si != null; si = si.Next)
+            for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
                 //true exit false entry
-                bool status = clip.Contains(p0);
+                bool status = PolygonAlgorithm.Contains(clip.ToList(), subject.ToPoint());
 
-                if(si.Value.IsIntersect)
+                if(si.IsIntersect)
                 {
-                    si.Value.IsExit = status;
+                    si.IsExit = status;
                     status = !status;
                 }
-                if (si == subject.First)
-                    si = null;
+            }
+
+            for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
+            {
+                //true exit false entry
+                bool status = PolygonAlgorithm.Contains(subject.ToList(), clip.ToPoint());
+
+                if (cj.IsIntersect)
+                {
+                    cj.IsExit = status;
+                    status = !status;
+                }
+            }
+
+            //phase 3
+            Vertex current;
+            Vertex start;
+            List<List<Vertex>> polygonList = new List<List<Vertex>>();
+
+            while((start = FirstUnprocessIntersection(subject)) != null)
+            {
+                current = start;
+                current.IsVisit = true;
+                var polygon = new List<Vertex>();
+                polygon.Add(current);
+                polygonList.Add(polygon);
+                do
+                {
+                    if (current.IsExit)
+                    {
+                        do
+                        {
+                            current = current.Previous;
+                            polygon.Add(current);
+                        } while (!current.IsIntersect);
+                    }
+                    else
+                    {
+                        do
+                        {
+                            current = current.Next;
+                            polygon.Add(current);
+                        } while (!current.IsIntersect);
+                    }
+                    if (current.IsIntersect)
+                    {
+                        current.IsVisit = true;
+                    }
+                    current = current.Neibour;
+                } while (current != start);
+            }
+
+            return polygonList;
+        }
+
+        private static Vertex FirstUnprocessIntersection(Vertex vertex)
+        {
+            for (var si = vertex; si != null; si = si.Next == vertex ? null : si.Next)
+            {
+                if (si.IsIntersect && !si.IsVisit)
+                    return si;
             }
             return null;
         }
@@ -72,7 +166,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             v = v / v.Length * alpha;
 
             var p = v1.ToPoint() + v;
-            var vertex = new Vertex() { X = p.X, Y = p.Y, IsIntersect = true };
+            var vertex = new Vertex() { X = p.X, Y = p.Y, IsIntersect = true,Previous = v1,Next = v2, };
             return vertex;
         }
 

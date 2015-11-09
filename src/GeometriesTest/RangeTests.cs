@@ -30,7 +30,7 @@ namespace GeometryTest
 				Assert.True (Range.Contains (double.NegativeInfinity, double.PositiveInfinity, value));
 			};
 
-			test.RunBatch (1000000);
+			test.RunBatch ();
 		}
 	}
 }
