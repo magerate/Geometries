@@ -114,51 +114,46 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             Vertex start;
             List<List<Vertex>> polygonList = new List<List<Vertex>>();
 
-            while((start = FirstUnprocessIntersection(subject)) != null)
+            for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
-                current = start;
-                current.IsVisit = true;
-                var polygon = new List<Vertex>();
-                polygon.Add(current);
-                polygonList.Add(polygon);
-                do
+                if (si.IsIntersect && !si.IsVisit)
                 {
-                    if (current.IsExit)
+                    start = si;
+                    current = start;
+                    current.IsVisit = true;
+                    var polygon = new List<Vertex>();
+                    polygon.Add(current);
+                    polygonList.Add(polygon);
+                    do
                     {
-                        do
+                        if (current.IsExit)
                         {
-                            current = current.Previous;
-                            polygon.Add(current);
-                        } while (!current.IsIntersect);
-                    }
-                    else
-                    {
-                        do
+                            do
+                            {
+                                current = current.Previous;
+                                polygon.Add(current);
+                            } while (!current.IsIntersect);
+                        }
+                        else
                         {
-                            current = current.Next;
-                            polygon.Add(current);
-                        } while (!current.IsIntersect);
-                    }
-                    if (current.IsIntersect)
-                    {
-                        current.IsVisit = true;
-                    }
-                    current = current.Neibour;
-                } while (current != start);
+                            do
+                            {
+                                current = current.Next;
+                                polygon.Add(current);
+                            } while (!current.IsIntersect);
+                        }
+                        if (current.IsIntersect)
+                        {
+                            current.IsVisit = true;
+                        }
+                        current = current.Neibour;
+                    } while (current != start);
+                }
             }
 
             return polygonList;
         }
 
-        private static Vertex FirstUnprocessIntersection(Vertex vertex)
-        {
-            for (var si = vertex; si != null; si = si.Next == vertex ? null : si.Next)
-            {
-                if (si.IsIntersect && !si.IsVisit)
-                    return si;
-            }
-            return null;
-        }
 
         private static Vertex CreateVertex(Vertex v1, Vertex v2, double alpha)
         {
