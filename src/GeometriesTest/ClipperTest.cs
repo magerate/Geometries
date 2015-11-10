@@ -22,6 +22,7 @@ namespace GeometryTest
                 double a = 0, b = 0;
                 if (Clipper.Intersects(v1, v2, v3, v4, ref a, ref b))
                 {
+                    //Assert.True(false);
                     var cross = Segment.Intersect(v1.ToPoint(), v2.ToPoint(), v3.ToPoint(), v4.ToPoint());
                     double aa = cross.Value.DistanceBetween(v1.ToPoint()) / v1.ToPoint().DistanceBetween(v2.ToPoint());
 
