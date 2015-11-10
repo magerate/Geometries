@@ -4,8 +4,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 {
     public class Vertex
     {
-        public double X { get; set; }
-        public double Y { get; set; }
+        public Point Point{ get; set; }
 
         public Vertex Previous { get; set; }
         public Vertex Next { get; set; }
@@ -21,7 +20,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 
         public override string ToString()
         {
-            return $"({X.ToString()},{Y.ToString()})";
+            return Point.ToString ();
         }
     }
 
