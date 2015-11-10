@@ -116,6 +116,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             if (clipType == ClipType.Union || clipType == ClipType.Difference)
                 status = !status;
 
+
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
                 if (si.IsIntersect)
