@@ -148,7 +148,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                             current.IsVisit = true;
                         }
                         current = current.Neibour;
-                    } while (current != start);
+                    } while (!current.IsVisit);
                 }
             }
 
