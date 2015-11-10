@@ -130,15 +130,12 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                 if (subject.Contains(clip.Point))
                 {
                     result.Add(clip.ToVertexList());
-                    return result;
                 }
                 else if (clip.Contains(subject.Point))
                 {
                     result.Add(subject.ToVertexList());
-                    return result;
                 }
-                return null;
-
+                return result;
             }
 
             //phase 2
