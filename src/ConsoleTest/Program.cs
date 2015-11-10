@@ -39,7 +39,7 @@ namespace ConsoleTest
             var l1 = p1.ToLinkList();
             var l2 = p2.ToLinkList();
 
-            var result = Clipper.Clip(l1, l2);
+            var result = Clipper.Intersect(l1, l2);
             Console.WriteLine();
 
         }
@@ -49,7 +49,7 @@ namespace ConsoleTest
             var p1 = TestHelper.CreateRandomPointArray();
             var p2 = TestHelper.CreateRandomPointArray();
 
-            var result = Clipper.Clip(p1.ToLinkList(), p2.ToLinkList());
+            var result = Clipper.Intersect(p1.ToLinkList(), p2.ToLinkList());
             Console.WriteLine();
         }
     }
