@@ -52,7 +52,22 @@ namespace Cession.Geometries.Clipping.GreinerHormann
     //
     public static class Clipper
     {
-        public static List<List<Vertex>> Clip(Vertex subject, Vertex clip)
+        public static List<List<Vertex>> Intersect(Vertex subject,Vertex clip)
+        {
+            return Clip(subject, clip, true, true);
+        }
+
+        public static List<List<Vertex>> Union(Vertex subject, Vertex clip)
+        {
+            return Clip(subject, clip, false, false);
+        }
+
+        public static List<List<Vertex>> Diff(Vertex subject, Vertex clip)
+        {
+            return Clip(subject, clip, false, true);
+        }
+
+        public static List<List<Vertex>> Clip(Vertex subject, Vertex clip, bool subjectEntry, bool clipEntry)
         {
             //phase 1
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
@@ -91,7 +106,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 
             //phase 2
             //true exit false entry
-            bool status = PolygonAlgorithm.EOContains(clip.ToList(), subject.Point);
+            bool status = subjectEntry ^ PolygonAlgorithm.EOContains(clip.ToList(), subject.Point);
 
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
@@ -102,7 +117,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                 }
             }
 
-            status = PolygonAlgorithm.EOContains(subject.ToList(), clip.Point);
+            status = clipEntry ^ PolygonAlgorithm.EOContains(subject.ToList(), clip.Point);
             for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
             {
                 if (cj.IsIntersect)
