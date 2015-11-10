@@ -2,7 +2,7 @@
 
 namespace Cession.Geometries.Clipping.GreinerHormann
 {
-    public class Vertex
+    public sealed class Vertex
     {
         public Point Point{ get; set; }
 
@@ -21,6 +21,33 @@ namespace Cession.Geometries.Clipping.GreinerHormann
         public override string ToString()
         {
             return Point.ToString ();
+        }
+
+        public bool Contains(Point point)
+        {
+            int windNumber = 0;
+            Vertex si = this;
+            do
+            {
+                if (si.Point.Y <= point.Y)
+                {
+                    if (si.Next.Point.Y > point.Y)
+                    {
+                        if (Triangle.GetSignedArea(si.Point, si.Next.Point, point) > 0)
+                            windNumber++;
+                    }
+                }
+                else
+                {
+                    if (si.Next.Point.Y <= point.Y)
+                        if (Triangle.GetSignedArea(si.Point, si.Next.Point, point) < 0)
+                            windNumber--;
+                }
+                si = si.Next;
+            } while (si != this);
+
+
+            return (windNumber & 1) != 0;
         }
     }
 

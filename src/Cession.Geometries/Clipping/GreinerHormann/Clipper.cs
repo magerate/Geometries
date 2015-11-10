@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Cession.Geometries.Clipping.GreinerHormann
@@ -18,6 +17,18 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             {
                 ps.Add(si.Point);
             }
+            return ps;
+        }
+
+        public static List<Vertex> ToVertexList(this Vertex vertex)
+        {
+            List<Vertex> ps = new List<Vertex>();
+            Vertex si = vertex;
+            do
+            {
+                ps.Add(si);
+                si = si.Next;
+            } while (si != vertex);
             return ps;
         }
 
@@ -75,6 +86,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 
         public static List<List<Vertex>> Clip(Vertex subject, Vertex clip, ClipType clipType)
         {
+            bool isIntersect = false;
             //phase 1
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
@@ -106,13 +118,32 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 
                         si = i1;
                         cj = i2;
+
+                        isIntersect = true;
                     }
                 }
             }
 
+            if(!isIntersect)
+            {
+                List<List<Vertex>> result = new List<List<Vertex>>();
+                if (subject.Contains(clip.Point))
+                {
+                    result.Add(clip.ToVertexList());
+                    return result;
+                }
+                else if (clip.Contains(subject.Point))
+                {
+                    result.Add(subject.ToVertexList());
+                    return result;
+                }
+                return null;
+
+            }
+
             //phase 2
             //true exit false entry
-            bool status =  PolygonAlgorithm.EOContains(clip.ToList(), subject.Point);
+            bool status = clip.Contains(subject.Point);
             if (clipType == ClipType.Union || clipType == ClipType.Difference)
                 status = !status;
 
@@ -126,7 +157,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                 }
             }
 
-            status = PolygonAlgorithm.EOContains(subject.ToList(), clip.Point);
+            status = subject.Contains(clip.Point);
             if (clipType == ClipType.Union)
                 status = !status;
             for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
