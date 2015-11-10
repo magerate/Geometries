@@ -49,25 +49,31 @@ namespace Cession.Geometries.Clipping.GreinerHormann
         }
     }
 
+    public enum ClipType
+    {
+        Inersection,
+        Union,
+        Difference,
+    }
     //
     public static class Clipper
     {
         public static List<List<Vertex>> Intersect(Vertex subject,Vertex clip)
         {
-            return Clip(subject, clip, true, true);
+            return Clip(subject, clip, ClipType.Inersection);
         }
 
         public static List<List<Vertex>> Union(Vertex subject, Vertex clip)
         {
-            return Clip(subject, clip, false, false);
+            return Clip(subject, clip, ClipType.Union);
         }
 
         public static List<List<Vertex>> Diff(Vertex subject, Vertex clip)
         {
-            return Clip(subject, clip, false, true);
+            return Clip(subject, clip, ClipType.Difference);
         }
 
-        public static List<List<Vertex>> Clip(Vertex subject, Vertex clip, bool subjectEntry, bool clipEntry)
+        public static List<List<Vertex>> Clip(Vertex subject, Vertex clip, ClipType clipType)
         {
             //phase 1
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
@@ -106,7 +112,9 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 
             //phase 2
             //true exit false entry
-            bool status = subjectEntry ^ PolygonAlgorithm.EOContains(clip.ToList(), subject.Point);
+            bool status =  PolygonAlgorithm.EOContains(clip.ToList(), subject.Point);
+            if (clipType == ClipType.Union || clipType == ClipType.Difference)
+                status = !status;
 
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
@@ -117,7 +125,9 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                 }
             }
 
-            status = clipEntry ^ PolygonAlgorithm.EOContains(subject.ToList(), clip.Point);
+            status = PolygonAlgorithm.EOContains(subject.ToList(), clip.Point);
+            if (clipType == ClipType.Union)
+                status = !status;
             for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
             {
                 if (cj.IsIntersect)
