@@ -21,7 +21,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             List<Point> ps = new List<Point>();
             for (var si = vertex; si != null; si = si.Next == vertex ? null : si.Next)
             {
-                ps.Add(vertex.ToPoint());
+                ps.Add(si.ToPoint());
             }
             return ps;
         }
@@ -45,8 +45,10 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                     result = v;
 
                 if (i == polygon.Length - 1)
+                {
                     current.Next = result;
-                result.Previous = current;
+                    result.Previous = current;
+                }
             }
             return result;
         }
@@ -83,25 +85,22 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                 }
             }
 
-
             //phase 2
+            //true exit false entry
+            bool status = PolygonAlgorithm.EOContains(clip.ToList(), subject.ToPoint());
+
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
-                //true exit false entry
-                bool status = PolygonAlgorithm.Contains(clip.ToList(), subject.ToPoint());
-
-                if(si.IsIntersect)
+                if (si.IsIntersect)
                 {
                     si.IsExit = status;
                     status = !status;
                 }
             }
 
+            status = PolygonAlgorithm.EOContains(subject.ToList(), clip.ToPoint());
             for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
             {
-                //true exit false entry
-                bool status = PolygonAlgorithm.Contains(subject.ToList(), clip.ToPoint());
-
                 if (cj.IsIntersect)
                 {
                     cj.IsExit = status;
@@ -121,9 +120,11 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                     start = si;
                     current = start;
                     current.IsVisit = true;
+
                     var polygon = new List<Vertex>();
-                    polygon.Add(current);
                     polygonList.Add(polygon);
+
+                    polygon.Add(current);
                     do
                     {
                         if (current.IsExit)

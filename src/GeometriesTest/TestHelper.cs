@@ -51,7 +51,9 @@ namespace GeometryTest
 
         public static Point[] CreateRandomPointArray()
         {
-            int count = Next(100, 200);
+            int count = 10;
+            //int count = Next(100, 200);
+
             Point[] ps = new Point[count];
             for (int i = 0; i < count; i++)
             {
@@ -60,7 +62,17 @@ namespace GeometryTest
             return ps;
         }
 
-		public static void AlmostEqual(double left,double right){
+        public static Point[] CreateRandomPointArray(int count)
+        {
+            Point[] ps = new Point[count];
+            for (int i = 0; i < count; i++)
+            {
+                ps[i] = CreateRandomPoint();
+            }
+            return ps;
+        }
+
+        public static void AlmostEqual(double left,double right){
 			AlmostEqual (left, right, 1e-5);
 		}
 

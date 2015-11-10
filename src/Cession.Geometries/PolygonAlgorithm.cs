@@ -17,35 +17,52 @@ namespace Cession.Geometries
             return windNumber != 0;
         }
 
+        public static bool EOContains(IList<Point> polygon, Point point)
+        {
+            return (GetWindNumber(polygon, point) & 1) != 0;
+        }
+
         //reference 
         //http://geomalgorithms.com/a03-_inclusion.html
         public static int GetWindNumber (IList<Point> polygon, Point point)
         {
             int windNumber = 0;
+            int ni;
 
             for (int i = 0; i < polygon.Count; i++)
-            { 
+            {
+                ni = i == polygon.Count - 1 ? 0 : i + 1;
                 if (polygon [i].Y <= point.Y)
                 {         
-                    if (polygon.NextPoint(i).Y > point.Y)
+                    if (polygon[ni].Y > point.Y)
                     {
-                        if (Triangle.GetSignedArea (polygon [i], polygon.NextPoint(i), point) > 0)
+                        if (Triangle.GetSignedArea (polygon [i], polygon[ni], point) > 0)
                             windNumber++;
                     }
                 }
                 else
                 {
-                    if (polygon.NextPoint(i).Y <= point.Y)
-                        if (Triangle.GetSignedArea (polygon [i], polygon.NextPoint(i), point) < 0)
+                    if (polygon[ni].Y <= point.Y)
+                        if (Triangle.GetSignedArea (polygon [i], polygon[ni], point) < 0)
                         windNumber--;           
                 }
             }
             return windNumber;
         }
 
-        private static Point NextPoint(this IList<Point> polygon,int index)
+        public static double GetWindNumberRaw(IList<Point> polygon, Point point)
         {
-            return polygon[(index + 1) % polygon.Count];
+            double windNumber = 0;
+            int ni;
+
+            for (int i = 0; i < polygon.Count; i++)
+            {
+                ni = i == polygon.Count - 1 ? 0 : i + 1;
+                double acos = ((polygon[i] - point) * (polygon[ni] - point)) / 
+                    (polygon[i].DistanceBetween(point) * polygon[ni].DistanceBetween(point));
+                windNumber += Math.Acos(acos);
+            }
+            return windNumber / Math.PI / 2;
         }
 
         public static Rect GetBounds(IList<Point> polygon)

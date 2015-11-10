@@ -54,6 +54,10 @@
       <Project>{0b25ddce-3544-4f46-b6e5-88a605a28615}</Project>
       <Name>Cession.Geometries</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GeometriesTest\GeometriesTest.csproj">
+      <Project>{c6dada6e-c6cf-4dfd-a2a4-e73fb067b3fc}</Project>
+      <Name>GeometriesTest</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -27,6 +27,24 @@ namespace GeometryTest
             Assert.False(PolygonAlgorithm.Contains(polygon, new Point(0.8, 0.9)));
             Assert.False(PolygonAlgorithm.Contains(polygon, new Point(0.8, -1.1)));
         }
+
+        [Test]
+        public void PolygonAlgorithm_WindNumberTest()
+        {
+            Action test = () =>
+            {
+                var ps = TestHelper.CreateRandomPointArray(50);
+                var point = TestHelper.CreateRandomPoint();
+
+                int wn = PolygonAlgorithm.GetWindNumber(ps, point);
+                double wnd = PolygonAlgorithm.GetWindNumberRaw(ps, point);
+
+                Assert.AreEqual((double)wn, wnd);
+                //TestHelper.AlmostEqual((double)wn, wnd);
+            };
+
+            test.RunBatch();
+        }
     }
 }
 
