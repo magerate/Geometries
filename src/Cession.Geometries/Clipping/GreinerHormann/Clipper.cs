@@ -195,7 +195,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                             do
                             {
                                 current = current.Previous;
-                                if(current != polygon[0])
+                                if(current.Neibour!= polygon[0])
                                     polygon.Add(current);
                                 current.IsVisit = true;
                             } while (!current.IsIntersect);
@@ -205,7 +205,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                             do
                             {
                                 current = current.Next;
-                                if(current != polygon[0])
+                                if(current.Neibour != polygon[0])
                                     polygon.Add(current);
                                 current.IsVisit = true;
                             } while (!current.IsIntersect);
