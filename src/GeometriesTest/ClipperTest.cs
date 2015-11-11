@@ -50,57 +50,66 @@ namespace GeometryTest
             action.RunBatch();
         }
 
-        //[Test]
-        //public void Clipper_ClipTest1()
-        //{
-        //    var p1 = new Point[]
-        //    {
-        //        new Point(0,0),
-        //        new Point(1,0),
-        //        new Point(1,1),
-        //        new Point(0,1),
-        //    };
-
-        //    var p2 = new Point[]
-        //    {
-        //        new Point(0.5,0.5),
-        //        new Point(1.5,0.5),
-        //        new Point(1.5,1.5),
-        //        new Point(0.5,1.5),
-        //    };
-
-        //    var cr = new Point[]
-        //    {
-        //        new Point(0.5,0.5),
-        //        new Point(1,0.5),
-        //        new Point(1,1),
-        //        new Point(0.5,1),
-        //    };
-
-        //    var l1 = p1.ToLinkList();
-        //    var l2 = p2.ToLinkList();
-
-        //    var result = Clipper.Clip(l1, l2);
-
-        //    Assert.AreEqual(result.Count, 1);
-        //    TestHelper.PolygonAreEqual(result[0].ToPointArray(), cr);
-        //}
         [Test]
-        public void Clipper_IntersectTest1()
+        public void Clipper_ClipTest1()
         {
-            string strSub = Resource1.subject1;
-            var subject = StringToPolygon(strSub);
+            var p1 = new Point[]
+            {
+                [0]: {(-190,-194)}
+                [1]: {(-265,75)}
+                [2]: {(-40,-112)}
+                [3]: {(56,84)}
+                [4]: {(194,-114)}
+                [5]: {(292,-259)}
+                [6]: {(65,-163)}
+            };
 
-            string strClip = Resource1.clip1;
-            var clip = StringToPolygon(strClip);
+            var p2 = new Point[]
+            {
+                [0]: {(-60,72)}
+                [1]: {(-6,-243)}
+                [2]: {(202,-21)}
+                [3]: {(294,-122)}
+                [4]: {(340,97)}
+                [5]: {(75,-45)}
+            };
 
-            var result = Intersect(subject, clip);
+            var cr = new Point[]
+            {
+                [0]: {(-31.4497354497354,-94.5432098765432)}
+                [1]: {(17.3065902578797,5.00095510983763)}
+                [2]: {(75,-45)}
+                [3]: {(126.627674631588,-17.3353592540172)}
+                [4]: {(160.243609022556,-65.5669172932331)}
+                [5]: {(67.8325800858418,-164.197919331457)}
+                [6]: {(65,-163)}
+                [7]: {(-17.9848534738229,-173.088354736033)}
+            };
 
-            string strResult = Resource1.result1;
-            var cr = StringToPolygonArray(strResult);
+            var l1 = p1.ToLinkList();
+            var l2 = p2.ToLinkList();
 
-            TestHelper.PolygonArrayAreEqual(cr, result);
+            var result = Clipper.Clip(l1, l2);
+
+            Assert.AreEqual(result.Count, 1);
+            TestHelper.PolygonAreEqual(result[0].ToPointArray(), cr);
         }
+//        [Test]
+//        public void Clipper_IntersectTest1()
+//        {
+//            string strSub = Resource1.subject1;
+//            var subject = StringToPolygon(strSub);
+//
+//            string strClip = Resource1.clip1;
+//            var clip = StringToPolygon(strClip);
+//
+//            var result = Intersect(subject, clip);
+//
+//            string strResult = Resource1.result1;
+//            var cr = StringToPolygonArray(strResult);
+//
+//            TestHelper.PolygonArrayAreEqual(cr, result);
+//        }
 
         private Point[][] StringToPolygonArray(string str)
         {
