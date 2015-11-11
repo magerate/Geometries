@@ -9,7 +9,10 @@ using NUnit.Framework;
 
 namespace GeometryTest
 {
-	[TestFixture ()]
+    //search \[.+\]\: \{(.+)\}
+    //replace new Point $1,
+
+    [TestFixture ()]
 	public class ClipperTest
 	{
         public static Point[][] Intersect(Point[] subject, Point[] clip)
@@ -50,6 +53,19 @@ namespace GeometryTest
             action.RunBatch();
         }
 
+       
+        [Test]
+        public void DummyTest()
+        {
+            var ps = new[] { new Point (-190,-194),
+    new Point (-265,75),
+    new Point (-40,-112),
+    new Point (56,84),
+    new Point (194,-114),
+    new Point (292,-259),
+    new Point (65,-163),
+    };
+        }
         //[Test]
         //public void Clipper_ClipTest1()
         //{
