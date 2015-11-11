@@ -73,7 +73,6 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             return (windNumber & 1) != 0;
         }
 
-        //seems wrong
         public static bool Intersects(Vertex p1, Vertex p2, Vertex q1, Vertex q2, ref double alphaP, ref double alphaQ)
         {
             double wecP1 = (p1.X - q1.X) * (q2.Y - q1.Y) - (p1.Y - q1.Y) * (q2.X - q1.X);
