@@ -16,12 +16,34 @@ namespace Cession.Geometries.Clipping.GreinerHormann
         public bool IsExit { get; set; }
 
         public Vertex Neibour { get; set; }
-        public float Alpha { get; set; }
+        public double Alpha { get; set; }
         public bool IsVisit { get; set; }
 
         public override string ToString()
         {
             return $"({X},{Y})";
+        }
+
+        public Vertex NonIntersectionNext
+        {
+            get{
+                Vertex v = this.Next;
+                while (v.IsIntersect)
+                    v = v.Next;
+                return v;
+            }
+        }
+
+        public void InsertTo(Vertex start,Vertex end)
+        {
+            Vertex prev, next = start;
+            while (next != end && next.Alpha < Alpha)
+                next = next.Next;
+            prev = next.Previous;
+            Next = next;
+            Previous = prev;
+            prev.Next = this;
+            next.Previous = this;
         }
 
         public bool Contains(Vertex point)

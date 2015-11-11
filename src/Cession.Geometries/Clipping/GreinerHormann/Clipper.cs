@@ -95,37 +95,41 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             //phase 1
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
+                if (si.IsIntersect)
+                    continue;
+                
                 for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
                 {
-                    var cross = Segment.Intersect (si.ToPoint(), si.Next.ToPoint(), cj.ToPoint(), cj.Next.ToPoint());
+                    if (cj.IsIntersect)
+                        continue;
+                    
+                    var cross = Segment.Intersect (si.ToPoint(), si.NonIntersectionNext.ToPoint(), 
+                            cj.ToPoint(), cj.NonIntersectionNext.ToPoint());
                     if (cross.HasValue)
                     {
+                        double a = cross.Value.DistanceBetween (si.ToPoint ()) /
+                                   si.ToPoint ().DistanceBetween (si.NonIntersectionNext.ToPoint ());
+                        double b = cross.Value.DistanceBetween (cj.ToPoint ()) /
+                            cj.ToPoint ().DistanceBetween (cj.NonIntersectionNext.ToPoint ());
+
                         Vertex i1 = new Vertex () {
                             X = cross.Value.X,
                             Y = cross.Value.Y,
                             IsIntersect = true,
-                            Previous = si,
-                            Next = si.Next
+                            Alpha = a,
                         };
                         Vertex i2 = new Vertex () {
                             X = cross.Value.X,
                             Y = cross.Value.Y,
                             IsIntersect = true,
-                            Previous = cj,
-                            Next = cj.Next
+                            Alpha = b,
                         };
+
                         i1.Neibour = i2;
                         i2.Neibour = i1;
 
-                        si.Next.Previous = i1;
-                        si.Next = i1;
-
-                        cj.Next.Previous = i2;
-                        cj.Next = i2;
-
-                        si = i1;
-                        cj = i2;
-
+                        i1.InsertTo (si, si.NonIntersectionNext);
+                        i2.InsertTo (cj, cj.NonIntersectionNext);
                         isIntersect = true;
                     }
                 }
