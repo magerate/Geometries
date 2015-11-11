@@ -100,11 +100,11 @@ namespace GeometryTest
 			Assert.NotNull (ip);
 
 
-			TestHelper.AlmostEqual (Math.Cos(Math.PI/4), ip.Item1.X);
-			TestHelper.AlmostEqual (Math.Sin(Math.PI/4), ip.Item1.Y);
+			TestHelper.AlmostEqual (Math.Cos(Math.PI/4), ip.Item1.X,1e-5);
+			TestHelper.AlmostEqual (Math.Sin(Math.PI/4), ip.Item1.Y, 1e-5);
 
-			TestHelper.AlmostEqual (-Math.Cos(Math.PI/4), ip.Item2.X);
-			TestHelper.AlmostEqual (-Math.Sin(Math.PI/4), ip.Item2.Y);
+			TestHelper.AlmostEqual (-Math.Cos(Math.PI/4), ip.Item2.X, 1e-5);
+			TestHelper.AlmostEqual (-Math.Sin(Math.PI/4), ip.Item2.Y, 1e-5);
 		}
 
 		[Test]
@@ -120,10 +120,10 @@ namespace GeometryTest
 				var ip = Circle.IntersectsWithLine(c1,r1,p1,p2);
 				if(null != ip){
 					var d1 = ip.Item1.DistanceBetween(c1);
-					TestHelper.AlmostEqual(d1,r1);
+					TestHelper.AlmostEqual(d1,r1,1e-5);
 
 					var d2 = ip.Item2.DistanceBetween(c1);
-					TestHelper.AlmostEqual(d2,r1);
+					TestHelper.AlmostEqual(d2,r1,1e-5);
 
 					Assert.True(LineHelper.AlmostContains(p1,p2,ip.Item1));
 					Assert.True(LineHelper.AlmostContains(p1,p2,ip.Item2));
