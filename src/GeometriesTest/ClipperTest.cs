@@ -21,68 +21,70 @@ namespace GeometryTest
 
             return pa;
         }
+        [Test]
+        public void Vertex_IntersectsTest()
+        {
+            Action action = () =>
+            {
+                var v1 = TestHelper.CreateRandomVertex();
+                var v2 = TestHelper.CreateRandomVertex();
+
+                var v3 = TestHelper.CreateRandomVertex();
+                var v4 = TestHelper.CreateRandomVertex();
+
+                double a = 0, b = 0;
+                if (Vertex.Intersects(v1, v2, v3, v4, ref a, ref b))
+                {
+                    //Assert.True(false);
+                    var cross = Segment.Intersect(v1.ToPoint(), v2.ToPoint(), v3.ToPoint(), v4.ToPoint());
+                    double aa = cross.Value.DistanceBetween(v1.ToPoint()) / v1.ToPoint().DistanceBetween(v2.ToPoint());
+
+                    double bb = cross.Value.DistanceBetween(v3.ToPoint()) / v3.ToPoint().DistanceBetween(v4.ToPoint());
+                    //Assert.AreEqual(a, aa);
+                    //Assert.AreEqual(b, bb);
+                    TestHelper.AlmostEqual(a, aa,1e-10);
+                    TestHelper.AlmostEqual(b, bb,1e-10);
+                }
+            };
+
+            action.RunBatch();
+        }
+
         //[Test]
-        //public void Clipper_IntersectsTest()
+        //public void Clipper_ClipTest1()
         //{
-        //    Action action = () =>
+        //    var p1 = new Point[]
         //    {
-        //        var v1 = TestHelper.CreateRandomVertex();
-        //        var v2 = TestHelper.CreateRandomVertex();
+        //        new Point(0,0),
+        //        new Point(1,0),
+        //        new Point(1,1),
+        //        new Point(0,1),
+        //    };
 
-            //        var v3 = TestHelper.CreateRandomVertex();
-            //        var v4 = TestHelper.CreateRandomVertex();
+        //    var p2 = new Point[]
+        //    {
+        //        new Point(0.5,0.5),
+        //        new Point(1.5,0.5),
+        //        new Point(1.5,1.5),
+        //        new Point(0.5,1.5),
+        //    };
 
-            //        double a = 0, b = 0;
-            //        if (Clipper.Intersects(v1, v2, v3, v4, ref a, ref b))
-            //        {
-            //            //Assert.True(false);
-            //            var cross = Segment.Intersect(v1.ToPoint(), v2.ToPoint(), v3.ToPoint(), v4.ToPoint());
-            //            double aa = cross.Value.DistanceBetween(v1.ToPoint()) / v1.ToPoint().DistanceBetween(v2.ToPoint());
+        //    var cr = new Point[]
+        //    {
+        //        new Point(0.5,0.5),
+        //        new Point(1,0.5),
+        //        new Point(1,1),
+        //        new Point(0.5,1),
+        //    };
 
-            //            double bb = cross.Value.DistanceBetween(v3.ToPoint()) / v3.ToPoint().DistanceBetween(v4.ToPoint());
-            //            TestHelper.AlmostEqual(a, aa,1e-10);
-            //            TestHelper.AlmostEqual(b, bb, 1e-10);
-            //        }
-            //    };
+        //    var l1 = p1.ToLinkList();
+        //    var l2 = p2.ToLinkList();
 
-            //    action.RunBatch();
-            //}
+        //    var result = Clipper.Clip(l1, l2);
 
-            //[Test]
-            //public void Clipper_ClipTest1()
-            //{
-            //    var p1 = new Point[]
-            //    {
-            //        new Point(0,0),
-            //        new Point(1,0),
-            //        new Point(1,1),
-            //        new Point(0,1),
-            //    };
-
-            //    var p2 = new Point[]
-            //    {
-            //        new Point(0.5,0.5),
-            //        new Point(1.5,0.5),
-            //        new Point(1.5,1.5),
-            //        new Point(0.5,1.5),
-            //    };
-
-            //    var cr = new Point[]
-            //    {
-            //        new Point(0.5,0.5),
-            //        new Point(1,0.5),
-            //        new Point(1,1),
-            //        new Point(0.5,1),
-            //    };
-
-            //    var l1 = p1.ToLinkList();
-            //    var l2 = p2.ToLinkList();
-
-            //    var result = Clipper.Clip(l1, l2);
-
-            //    Assert.AreEqual(result.Count, 1);
-            //    TestHelper.PolygonAreEqual(result[0].ToPointArray(), cr);
-            //}
+        //    Assert.AreEqual(result.Count, 1);
+        //    TestHelper.PolygonAreEqual(result[0].ToPointArray(), cr);
+        //}
         [Test]
         public void Clipper_IntersectTest1()
         {
@@ -119,8 +121,8 @@ namespace GeometryTest
         {
             Action test = () =>
             {
-                var p1 = TestHelper.CreateRandomPointArray(100);
-                var p2 = TestHelper.CreateRandomPointArray(100);
+                var p1 = TestHelper.CreateRandomPointArray(200);
+                var p2 = TestHelper.CreateRandomPointArray(200);
 
                 var result = Clipper.Intersect(p1.ToLinkList(), p2.ToLinkList());
 
@@ -134,7 +136,7 @@ namespace GeometryTest
                 }
             };
 
-            test.RunBatch(100);
+            test.RunBatch(1000);
         }
     }
 }

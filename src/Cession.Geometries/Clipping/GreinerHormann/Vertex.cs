@@ -72,7 +72,36 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 
             return (windNumber & 1) != 0;
         }
+
+        //seems wrong
+        public static bool Intersects(Vertex p1, Vertex p2, Vertex q1, Vertex q2, ref double alphaP, ref double alphaQ)
+        {
+            double wecP1 = (p1.X - q1.X) * (q2.Y - q1.Y) - (p1.Y - q1.Y) * (q2.X - q1.X);
+            double wecP2 = (p2.X - q1.X) * (q2.Y - q1.Y) - (p2.Y - q1.Y) * (q2.X - q1.X);
+            if (wecP1 * wecP2 <= 0)
+            {
+                double wecQ1 = (q1.X - p1.X) * (p2.Y - p1.Y) - (q1.Y - p1.Y) * (p2.X - p1.X);
+                double wecQ2 = (q2.X - p1.X) * (p2.Y - p1.Y) - (q2.Y - p1.Y) * (p2.X - p1.X);
+                if (wecQ1 * wecQ2 <= 0)
+                {
+                    alphaP = wecP1 / (wecP1 - wecP2);
+                    alphaQ = wecQ1 / (wecQ1 - wecQ2);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static Vertex CreateVertex(Vertex v1, Vertex v2, double alpha)
+        {
+            var v = v2.ToPoint() - v1.ToPoint();
+            v = v / v.Length * alpha;
+
+            var p = v1.ToPoint() + v;
+            var vertex = new Vertex() { X = p.X, Y = p.Y, IsIntersect = true};
+            return vertex;
+        }
     }
 
-   
+
 }
