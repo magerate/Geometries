@@ -5,9 +5,14 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 {
     public static class VertexHelper
     {
+        public static Point ToPoint(this Vertex vertex)
+        {
+            return new Point(vertex.X, vertex.Y);
+        }
+
         public static Vertex ToVertex(this Point point)
         {
-            return new Vertex() { Point = point };
+            return new Vertex() { X = point.X,Y = point.Y };
         }
 
         public static List<Point> ToList(this Vertex vertex)
@@ -15,7 +20,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             List<Point> ps = new List<Point>();
             for (var si = vertex; si != null; si = si.Next == vertex ? null : si.Next)
             {
-                ps.Add(si.Point);
+                ps.Add(si.ToPoint());
             }
             return ps;
         }
@@ -92,17 +97,19 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             {
                 for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
                 {
-                    var cross = Segment.Intersect (si.Point, si.Next.Point, cj.Point, cj.Next.Point);
+                    var cross = Segment.Intersect (si.ToPoint(), si.Next.ToPoint(), cj.ToPoint(), cj.Next.ToPoint());
                     if (cross.HasValue)
                     {
                         Vertex i1 = new Vertex () {
-                           Point = cross.Value,
+                            X = cross.Value.X,
+                            Y = cross.Value.Y,
                             IsIntersect = true,
                             Previous = si,
                             Next = si.Next
                         };
                         Vertex i2 = new Vertex () {
-                            Point = cross.Value,
+                            X = cross.Value.X,
+                            Y = cross.Value.Y,
                             IsIntersect = true,
                             Previous = cj,
                             Next = cj.Next
@@ -127,11 +134,11 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             if(!isIntersect)
             {
                 List<List<Vertex>> result = new List<List<Vertex>>();
-                if (subject.Contains(clip.Point))
+                if (subject.Contains(clip))
                 {
                     result.Add(clip.ToVertexList());
                 }
-                else if (clip.Contains(subject.Point))
+                else if (clip.Contains(subject))
                 {
                     result.Add(subject.ToVertexList());
                 }
@@ -140,7 +147,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
 
             //phase 2
             //true exit false entry
-            bool status = clip.Contains(subject.Point);
+            bool status = clip.Contains(subject);
             if (clipType == ClipType.Union || clipType == ClipType.Difference)
                 status = !status;
 
@@ -154,7 +161,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                 }
             }
 
-            status = subject.Contains(clip.Point);
+            status = subject.Contains(clip);
             if (clipType == ClipType.Union)
                 status = !status;
             for (var cj = clip; cj != null; cj = cj.Next == clip ? null : cj.Next)
@@ -188,7 +195,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                             do
                             {
                                 current = current.Previous;
-                                if(current.Point != polygon[0].Point)
+                                if(current != polygon[0])
                                     polygon.Add(current);
                                 current.IsVisit = true;
                             } while (!current.IsIntersect);
@@ -198,7 +205,7 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                             do
                             {
                                 current = current.Next;
-                                if(current.Point != polygon[0].Point)
+                                if(current != polygon[0])
                                     polygon.Add(current);
                                 current.IsVisit = true;
                             } while (!current.IsIntersect);
@@ -213,33 +220,33 @@ namespace Cession.Geometries.Clipping.GreinerHormann
         }
 
 
-//        private static Vertex CreateVertex(Vertex v1, Vertex v2, double alpha)
-//        {
-//            var v = v2.ToPoint() - v1.ToPoint();
-//            v = v / v.Length * alpha;
-//
-//            var p = v1.ToPoint() + v;
-//            var vertex = new Vertex() { X = p.X, Y = p.Y, IsIntersect = true,Previous = v1,Next = v2, };
-//            return vertex;
-//        }
+        //        private static Vertex CreateVertex(Vertex v1, Vertex v2, double alpha)
+        //        {
+        //            var v = v2.ToPoint() - v1.ToPoint();
+        //            v = v / v.Length * alpha;
+        //
+        //            var p = v1.ToPoint() + v;
+        //            var vertex = new Vertex() { X = p.X, Y = p.Y, IsIntersect = true,Previous = v1,Next = v2, };
+        //            return vertex;
+        //        }
 
         //seems wrong
-//        public static bool Intersects(Vertex p1,Vertex p2,Vertex q1,Vertex q2,ref double alphaP,ref double alphaQ)
-//        {
-//            double wecP1 = (p1.X - q1.X) * (q2.Y - q1.Y) - (p1.Y - q1.Y) *(q2.X - q1.X);
-//            double wecP2 = (p2.X - q1.X) * (q2.Y - q1.Y) - (p2.Y - q1.Y) * (q2.X - q1.X);
-//            if(wecP1 * wecP2 <=0)
-//            {
-//                double wecQ1 = (q1.X - p1.X) * (p2.Y - p1.Y) - (q1.Y - p1.Y) * (p2.X - p1.X);
-//                double wecQ2 = (q2.X - p1.X) * (p2.Y - p1.Y) - (q2.Y - p1.Y) * (p2.X - p1.X);
-//                if(wecQ1 * wecQ2 <= 0)
-//                {
-//                    alphaP = wecP1 / (wecP1 - wecP2);
-//                    alphaQ = wecQ1 / (wecQ1 - wecQ2);
-//                    return true;
-//                }
-//            }
-//            return false;
-//        }
+        //public static bool Intersects(Vertex p1, Vertex p2, Vertex q1, Vertex q2, ref double alphaP, ref double alphaQ)
+        //{
+        //    double wecP1 = (p1.X - q1.X) * (q2.Y - q1.Y) - (p1.Y - q1.Y) * (q2.X - q1.X);
+        //    double wecP2 = (p2.X - q1.X) * (q2.Y - q1.Y) - (p2.Y - q1.Y) * (q2.X - q1.X);
+        //    if (wecP1 * wecP2 <= 0)
+        //    {
+        //        double wecQ1 = (q1.X - p1.X) * (p2.Y - p1.Y) - (q1.Y - p1.Y) * (p2.X - p1.X);
+        //        double wecQ2 = (q2.X - p1.X) * (p2.Y - p1.Y) - (q2.Y - p1.Y) * (p2.X - p1.X);
+        //        if (wecQ1 * wecQ2 <= 0)
+        //        {
+        //            alphaP = wecP1 / (wecP1 - wecP2);
+        //            alphaQ = wecQ1 / (wecQ1 - wecQ2);
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
     }
 }

@@ -17,7 +17,7 @@ namespace GeometryTest
             var v1 = subject.ToLinkList();
             var v2 = clip.ToLinkList();
             var result = Clipper.Intersect(v1, v2);
-            var pa = result.Select(l => l.Select(v => v.Point).ToArray()).ToArray();
+            var pa = result.Select(l => l.Select(v => v.ToPoint()).ToArray()).ToArray();
 
             return pa;
         }
@@ -128,8 +128,8 @@ namespace GeometryTest
                 {
                     foreach (var v in item)
                     {
-                        PolygonAlgorithm.Contains(p1, v.Point);
-                        PolygonAlgorithm.Contains(p2, v.Point);
+                        PolygonAlgorithm.Contains(p1, v.ToPoint());
+                        PolygonAlgorithm.Contains(p2, v.ToPoint());
                     }
                 }
             };

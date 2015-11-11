@@ -38,9 +38,9 @@ namespace GeometryTest
 
         public static Vertex CreateRandomVertex()
         {
-            //var x = random.NextDouble();
-            //var y = random.NextDouble();
-            return new Vertex() { Point = CreateRandomPoint() };
+            var x = random.NextDouble();
+            var y = random.NextDouble();
+            return new Vertex() { X = x,Y = y };
         }
 
         public static Point CreateRandomPoint(double maxValue){
@@ -97,7 +97,7 @@ namespace GeometryTest
 
         public static Point[] ToPointArray(this List<Vertex> polygon)
         {
-            return polygon.Select(p => p.Point).ToArray();
+            return polygon.Select(p => p.ToPoint()).ToArray();
         }
 
         public static void PolygonAreEqual(Point[] p1,Point[] p2)
