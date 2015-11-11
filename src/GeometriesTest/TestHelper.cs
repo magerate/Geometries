@@ -73,7 +73,7 @@ namespace GeometryTest
         }
 
         public static void AlmostEqual(double left,double right){
-			AlmostEqual (left, right, 1e-5);
+			AlmostEqual (left, right, 1e-10);
 		}
 
 		public static void AlmostEqual(double left,double right,double delta){
@@ -95,6 +95,12 @@ namespace GeometryTest
 			Assert.AreEqual (p1.Y, p2.Y);
 		}
 
+        public static void PointAreAlmostEqual(Point p1, Point p2)
+        {
+            AlmostEqual(p1.X, p2.X);
+            AlmostEqual(p1.Y, p2.Y);
+        }
+
         public static Point[] ToPointArray(this List<Vertex> polygon)
         {
             return polygon.Select(p => p.ToPoint()).ToArray();
@@ -106,7 +112,7 @@ namespace GeometryTest
 
             for (int i = 0; i < p1.Length; i++)
             {
-                PointAreEqual(p1[i], p2[i]);
+                PointAreAlmostEqual(p1[i], p2[i]);
             }
         }
 

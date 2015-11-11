@@ -124,7 +124,6 @@ namespace Cession.Geometries.Clipping.GreinerHormann
                             IsIntersect = true,
                             Alpha = b,
                         };
-
                         i1.Neibour = i2;
                         i2.Neibour = i1;
 
@@ -150,12 +149,9 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             }
 
             //phase 2
-            //true exit false entry
             bool status = clip.Contains(subject);
             if (clipType == ClipType.Union || clipType == ClipType.Difference)
                 status = !status;
-
-
             for (var si = subject; si != null; si = si.Next == subject ? null : si.Next)
             {
                 if (si.IsIntersect)

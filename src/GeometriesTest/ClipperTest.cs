@@ -53,83 +53,50 @@ namespace GeometryTest
             action.RunBatch();
         }
 
-       
+     
         [Test]
-        public void DummyTest()
+        public void Clipper_ClipTest1()
         {
-            var ps = new[] { new Point (-190,-194),
-    new Point (-265,75),
-    new Point (-40,-112),
-    new Point (56,84),
-    new Point (194,-114),
-    new Point (292,-259),
-    new Point (65,-163),
-    };
-        }
-        //[Test]
-        //public void Clipper_ClipTest1()
-        //{
-        //    var p1 = new Point[]
-        //    {
-        //        new Point(0,0),
-        //        new Point(1,0),
-        //        new Point(1,1),
-        //        new Point(0,1),
-        //    };
+            var p1 = new Point[]
+            {
+                new Point (-190,-194),
+                new Point (-265,75),
+                new Point (-40,-112),
+                new Point (56,84),
+                new Point (194,-114),
+                new Point (292,-259),
+                new Point (65,-163),
+            };
 
-        //    var p2 = new Point[]
-        //    {
-        //        new Point(0.5,0.5),
-        //        new Point(1.5,0.5),
-        //        new Point(1.5,1.5),
-        //        new Point(0.5,1.5),
-        //    };
+            var p2 = new Point[]
+            {
+                new Point (-60,72),
+                new Point (-6,-243),
+                new Point (202,-21),
+                new Point (294,-122),
+                new Point (340,97),
+                new Point (75,-45),
+            };
 
-        //    var cr = new Point[]
-        //    {
-        //        new Point(0.5,0.5),
-        //        new Point(1,0.5),
-        //        new Point(1,1),
-        //        new Point(0.5,1),
-        //    };
+            var cr = new Point[]
+            {
+                new Point (-31.4497354497354,-94.5432098765432),
+                new Point (17.3065902578797,5.00095510983763),
+                new Point (75,-45),
+                new Point (126.627674631588,-17.3353592540172),
+                new Point (160.243609022556,-65.5669172932331),
+                new Point (67.8325800858418,-164.197919331457),
+                new Point (65,-163),
+                new Point (-17.9848534738229,-173.088354736033),
+            };
 
-        //    var l1 = p1.ToLinkList();
-        //    var l2 = p2.ToLinkList();
+            var l1 = p1.ToLinkList();
+            var l2 = p2.ToLinkList();
 
-        //    var result = Clipper.Clip(l1, l2);
+            var result = Clipper.Intersect(l1, l2);
 
-        //    Assert.AreEqual(result.Count, 1);
-        //    TestHelper.PolygonAreEqual(result[0].ToPointArray(), cr);
-        //}
-        [Test]
-        public void Clipper_IntersectTest1()
-        {
-            string strSub = Resource1.subject1;
-            var subject = StringToPolygon(strSub);
-
-            string strClip = Resource1.clip1;
-            var clip = StringToPolygon(strClip);
-
-            var result = Intersect(subject, clip);
-
-            string strResult = Resource1.result1;
-            var cr = StringToPolygonArray(strResult);
-
-            TestHelper.PolygonArrayAreEqual(cr, result);
-        }
-
-        private Point[][] StringToPolygonArray(string str)
-        {
-            var textReader = new System.IO.StringReader(str);
-            var serializer = new XmlSerializer(typeof(Point[][]));
-            return serializer.Deserialize(textReader) as Point[][];
-        }
-
-        private Point[] StringToPolygon(string str)
-        {
-            var textReader = new System.IO.StringReader(str);
-            var serializer = new XmlSerializer(typeof(Point[]));
-            return serializer.Deserialize(textReader) as Point[];
+            Assert.AreEqual(result.Count, 1);
+            TestHelper.PolygonAreEqual(result[0].ToPointArray(), cr);
         }
 
         [Test]
@@ -137,8 +104,8 @@ namespace GeometryTest
         {
             Action test = () =>
             {
-                var p1 = TestHelper.CreateRandomPointArray(200);
-                var p2 = TestHelper.CreateRandomPointArray(200);
+                var p1 = TestHelper.CreateRandomPointArray();
+                var p2 = TestHelper.CreateRandomPointArray();
 
                 var result = Clipper.Intersect(p1.ToLinkList(), p2.ToLinkList());
 
@@ -152,7 +119,7 @@ namespace GeometryTest
                 }
             };
 
-            test.RunBatch(1000);
+            test.RunBatch();
         }
     }
 }

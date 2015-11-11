@@ -91,13 +91,13 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             return false;
         }
 
-        private static Vertex CreateVertex(Vertex v1, Vertex v2, double alpha)
+        public static Vertex Create(Vertex v1, Vertex v2, double alpha)
         {
             var v = v2.ToPoint() - v1.ToPoint();
             v = v / v.Length * alpha;
 
             var p = v1.ToPoint() + v;
-            var vertex = new Vertex() { X = p.X, Y = p.Y, IsIntersect = true};
+            var vertex = new Vertex() { X = p.X, Y = p.Y, IsIntersect = true,Alpha = alpha};
             return vertex;
         }
     }
