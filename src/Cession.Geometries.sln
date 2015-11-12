@@ -5,9 +5,15 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cession.Geometries", "Cession.Geometries\Cession.Geometries.csproj", "{0B25DDCE-3544-4F46-B6E5-88A605A28615}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryTest", "GeometryTest\GeometryTest.csproj", "{184E80E7-3DB0-4BC3-ADF2-BA1DEC3C94BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryTest.Win", "GeometryTest.Win\GeometryTest.Win.csproj", "{184E80E7-3DB0-4BC3-ADF2-BA1DEC3C94BD}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedTest", "SharedTest\SharedTest.shproj", "{21D01A34-765A-407B-B08B-C413AAEF381F}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedTest\SharedProject1.projitems*{21d01a34-765a-407b-b08b-c413aaef381f}*SharedItemsImports = 13
+		SharedTest\SharedProject1.projitems*{184e80e7-3db0-4bc3-adf2-ba1dec3c94bd}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
