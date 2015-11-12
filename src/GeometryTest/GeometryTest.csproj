@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{32356672-0D73-4901-B006-DDF8AC71425D}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>GeometryTest.iOS</RootNamespace>
+    <RootNamespace>GeometryTest</RootNamespace>
     <AssemblyName>GeometryTest.iOS</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -33,7 +33,6 @@
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <Import Project="..\SharedTest\SharedProject1.projitems" Label="Shared" Condition="Exists('..\SharedTest\SharedProject1.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\Cession.Geometries\Cession.Geometries.csproj">
@@ -43,5 +42,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CircleTests.cs" />
+    <Compile Include="ClipperTest.cs" />
+    <Compile Include="LineHelper.cs" />
+    <Compile Include="LineTest.cs" />
+    <Compile Include="PointTests.cs" />
+    <Compile Include="PolygonAlgorithmTest.cs" />
+    <Compile Include="RangeTests.cs" />
+    <Compile Include="RectTests.cs" />
+    <Compile Include="SegmentTests.cs" />
+    <Compile Include="TestHelper.cs" />
+    <Compile Include="TriangleTests.cs" />
+    <Compile Include="VertexTest.cs" />
   </ItemGroup>
 </Project>
