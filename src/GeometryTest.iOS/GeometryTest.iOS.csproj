@@ -30,18 +30,18 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="..\SharedTest\SharedProject1.projitems" Label="Shared" Condition="Exists('..\SharedTest\SharedProject1.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Cession.Geometries\Cession.Geometries.csproj">
       <Project>{0B25DDCE-3544-4F46-B6E5-88A605A28615}</Project>
       <Name>Cession.Geometries</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
