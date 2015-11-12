@@ -13,6 +13,11 @@ namespace Cession.Geometries
             Y = y;
         }
 
+        public bool AlmostEqual(Point p,double delta = 1e-10)
+        {
+            return Math.Abs(p.X - X) <= delta && Math.Abs(p.Y - Y) <= delta;
+        }
+
         public bool Equals (Point p)
         {
             return X == p.X && Y == p.Y;

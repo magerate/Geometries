@@ -139,6 +139,17 @@ namespace Cession.Geometries
             return Line.Intersect (line1._p1, line1._p2, line2._p1, line2._p2);
         }
 
+        public static Point? IntersectWithSegment(Point p1,Point p2,Point p3,Point p4)
+        {
+            var cross = Line.Intersect(p1, p2, p3, p4);
+            if (cross.HasValue &&
+                Range.Contains(p3.X, p4.X, cross.Value.X) &&
+                Range.Contains(p3.Y, p4.Y, cross.Value.Y))
+                return cross;
+
+            return null;
+        }
+
         public void Offset (int x, int y)
         {
             _p1.Offset (x, y);

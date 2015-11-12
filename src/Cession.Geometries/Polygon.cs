@@ -1,10 +1,69 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Cession.Geometries
 {
     public class Polygon
     {
+        public static Point[][] Split(Point[] polygon, Point p1, Point p2)
+        {
+            var linkedList = new LinkedList<Point>(polygon);
+            var result = Split(linkedList, p1, p2);
+            return result.Select(l => l.ToArray()).ToArray();
+        }
+
+        public static List<LinkedList<Point>> Split(LinkedList<Point> polygon,Point p1,Point p2)
+        {
+            List<LinkedListNode<Point>> intersectNodes = new List<LinkedListNode<Point>>();
+
+            for (var i = polygon.First; i != null; i= i.Next)
+            {
+                var ni = i.Next == null ? polygon.First : i.Next;
+                var cross = Line.IntersectWithSegment(p1,p2,i.Value,ni.Value);
+                if (cross.HasValue)
+                {
+                    var node = polygon.AddAfter(i, cross.Value);
+                    intersectNodes.Add(node);
+                }
+            }
+
+            List<LinkedList<Point>> result = new List<LinkedList<Point>>();
+            if (intersectNodes.Count == 0)
+                return result;
+
+            LinkedList<Point> sp;
+            for (int i = 0; i < intersectNodes.Count; i++)
+            {
+                var node = intersectNodes[i];
+                if(i % 2 == 0)
+                {
+                    sp = new LinkedList<Point>();
+                    result.Add(sp);
+                    sp.AddLast(node.Value);
+                    while(node != intersectNodes[i+1])
+                    {
+                        node = node.Next;
+                        sp.AddLast(node.Value);
+                    }
+                    sp.AddLast(node.Value);
+                }
+                else
+                {
+                    if(i == intersectNodes.Count - 1)
+                    {
+                        sp = new LinkedList<Point>();
+                        while (node != intersectNodes[i - 1])
+                        {
+                            result.Add(sp);
+                        }
+                        result.Add(sp);
+                    }
+                }
+            }
+            return result;
+        }
+
         public static Rect GetBounds(IReadOnlyList<Point> polygon)
         {
             if (null == polygon)
