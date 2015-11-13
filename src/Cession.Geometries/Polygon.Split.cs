@@ -51,6 +51,15 @@ namespace Cession.Geometries
                 return null;
             return signedArea > 0;
         }
+
+        public static double CrossProduct(SplitVertex v1,SplitVertex v2,SplitVertex v3)
+        {
+//            var vector1 = v2.ToPoint () - v1.ToPoint ();
+//            var vector2 = v2.ToPoint () - v3.ToPoint ();
+//            return vector1.CrossProduct (vector2);
+//            return v1.X * v2.Y - v1.Y * v2.X;
+            return (v2.X - v1.X) * (v3.Y - v2.Y) - (v2.Y - v1.Y) * (v3.X - v2.X);
+        }
     }
 
     internal static class SplitHeper
@@ -110,23 +119,62 @@ namespace Cession.Geometries
             if (Math.Abs(index1 - index2) == 1)
                 return;
 
-            var current = end.GetNextIntersection ();
-            while(current != start)
+//            int step = index2 > index1 ? 1 : -1;
+//            index2 -= step;
+//            index1 += step;
+//
+//            for (; index2 != index1; index2 -= step)
+//            {
+//                var cornerDirection = intersections[index2].GetDirection (intersections[index2].GetNextIntersection ());
+//                if (cornerDirection != direction && cornerDirection != null)
+//                {
+//                    do
+//                    {
+//                        polygon.Add (end);
+//                        end = end.Next;
+//                    } while (!end.IsIntersect);
+//                    polygon.Add (end);
+//                }
+//            }
+            SplitVertex stop;
+            if (index2 > index1)
             {
-                var cornerDirection = current.GetDirection (current.GetNextIntersection ());
+                end = intersections [index2 - 1];
+                stop = intersections [index1 + 1];
+            }
+            else
+            {
+                end = intersections [index2 + 1];
+                stop = intersections [index1 - 1];
+            }
 
+            while(end != stop)
+            {
                 //connect vertex when encounter concave intersection
-                if (current.IsIntersect && cornerDirection != direction && cornerDirection != null)
+                if (end.IsIntersect)
                 {
-                    do
+                    var cornerDirection = end.GetDirection (end.GetNextIntersection ());
+                    if (cornerDirection != direction && cornerDirection != null)
                     {
-                        polygon.Add (current);
-                        current = current.Next;
-                    } while (!current.IsIntersect);
-                    polygon.Add (current);
+                        double cp1 = SplitVertex.CrossProduct (intersections [0], intersections [intersections.Count - 1], start.Next);
+                        double cp2 = SplitVertex.CrossProduct (intersections [0], intersections [intersections.Count - 1], end.Next);
+                        if (cp1 * cp2 > 0)
+                        {
+                            do
+                            {
+                                polygon.Add (end);
+                                end = end.Next;
+                            } while (!end.IsIntersect);
+                            polygon.Add (end);
+                        }
+                        else
+                            end = end.Next;
+                    }
+                    else
+                        end = end.Next;
                 }
                 else
-                    current = current.Next;
+                    end = end.Next;
             }
         }
 
