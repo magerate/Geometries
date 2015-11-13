@@ -58,5 +58,6 @@
     <Compile Include="TestHelper.cs" />
     <Compile Include="TriangleTests.cs" />
     <Compile Include="VertexTest.cs" />
+    <Compile Include="PolygonSplitTest.cs" />
   </ItemGroup>
 </Project>

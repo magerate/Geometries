@@ -94,8 +94,9 @@ namespace Cession.Geometries
         {
             var linkedList = polygon.ToLinkList();
             var result = Split(linkedList, p1, p2);
-            return result.Select(l => l.Select(v=>v.ToPoint()).ToArray())
+            var ps = result.Select(l => l.Select(v=>v.ToPoint()).ToArray())
                 .ToArray();
+            return ps;
         }
 
         private static void ConnectIntersections(SplitVertex start,
@@ -112,14 +113,17 @@ namespace Cession.Geometries
             var current = end.GetNextIntersection ();
             while(current != start)
             {
-                if (current.IsIntersect && current.GetDirection (current.GetNextIntersection ()) != direction)
+                var cornerDirection = current.GetDirection (current.GetNextIntersection ());
+
+                //connect vertex when encounter concave intersection
+                if (current.IsIntersect && cornerDirection != direction && cornerDirection != null)
                 {
                     do
                     {
-                        polygon.Add(current);
+                        polygon.Add (current);
                         current = current.Next;
                     } while (!current.IsIntersect);
-                    polygon.Add(current);
+                    polygon.Add (current);
                 }
                 else
                     current = current.Next;
@@ -169,11 +173,12 @@ namespace Cession.Geometries
             if (ins.Count == 0)
                 return result;
 
+            //phase 2
             current = ins[0];
             bool? direction = polygon.GetDirection();
             do
             {
-                //is concave corner
+                //create new polygon when encouter convex intersection
                 if(current.IsIntersect && current.GetDirection(current.GetNextIntersection()) == direction)
                 {
                     var fi = current;
