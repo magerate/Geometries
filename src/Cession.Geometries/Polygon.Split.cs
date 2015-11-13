@@ -18,6 +18,11 @@ namespace Cession.Geometries
             return new Point(X, Y);
         }
 
+        public override string ToString ()
+        {
+            return $"({X},{Y})";
+        }
+
         public SplitVertex GetNextIntersection()
         {
             var v = Next;
@@ -28,17 +33,7 @@ namespace Cession.Geometries
 
         public bool? GetDirection()
         {
-            double signedArea = 0;
-            SplitVertex v = this;
-            do
-            {
-                signedArea += (v.X * Next.Y - Next.X * v.Y);
-                v = v.Next;
-            } while (v != this);
-
-            if (signedArea == 0)
-                return null;
-            return signedArea > 0;
+            return GetDirection (Previous);
         }
 
         public bool? GetDirection(SplitVertex end)
@@ -47,7 +42,7 @@ namespace Cession.Geometries
             SplitVertex v = this;
             do
             {
-                signedArea += (v.X * Next.Y - Next.X * v.Y);
+                signedArea += (v.X * v.Next.Y - v.Next.X * v.Y);
                 v = v.Next;
             } while (v != end);
             signedArea += (end.X * Y - X * end.Y);
@@ -114,22 +109,20 @@ namespace Cession.Geometries
             if (Math.Abs(index1 - index2) == 1)
                 return;
 
-            int ls = index2 > index1 ? -1 : 1;
-            index2 += ls;
-            for (int i = index2; i != index1 - ls; i+= ls)
+            var current = end.GetNextIntersection ();
+            while(current != start)
             {
-                var cross = intersections[i];
-                var nc = intersections[i+ls];
-                if(cross.GetDirection(nc) != direction)
+                if (current.IsIntersect && current.GetDirection (current.GetNextIntersection ()) != direction)
                 {
-                    var v = cross;
                     do
                     {
-                        polygon.Add(cross);
-                        v = v.Next;
-                    } while (v != nc);
-                    polygon.Add(v);
+                        polygon.Add(current);
+                        current = current.Next;
+                    } while (!current.IsIntersect);
+                    polygon.Add(current);
                 }
+                else
+                    current = current.Next;
             }
         }
 
@@ -159,12 +152,14 @@ namespace Cession.Geometries
                     else
                     {
                         int j = 0;
-                        while (cross.Value.X > ins[j].X ||
-                            (cross.Value.X == ins[j].X && cross.Value.Y > ins[j].Y))
-                        {
-                            j++;
-                        }
-                        ins.Insert(j, iv);
+                        for (; j<ins.Count && (cross.Value.X > ins[j].X || 
+                            (cross.Value.X == ins[j].X && cross.Value.Y >ins[j].Y)); 
+                            j++);
+
+                        if(j == ins.Count)
+                            ins.Add(iv);
+                        else
+                            ins.Insert(j, iv);
                     }
                 }
                 current = next;
@@ -181,6 +176,7 @@ namespace Cession.Geometries
                 //is concave corner
                 if(current.IsIntersect && current.GetDirection(current.GetNextIntersection()) == direction)
                 {
+                    var fi = current;
                     var sp = new List<SplitVertex>();
                     result.Add(sp);
                     do
@@ -189,6 +185,7 @@ namespace Cession.Geometries
                         current = current.Next;
                     } while (!current.IsIntersect);
                     sp.Add(current);
+                    ConnectIntersections(fi,current,ins,direction,sp);
                 }
                 else
                     current = current.Next;
