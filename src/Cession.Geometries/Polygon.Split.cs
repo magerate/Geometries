@@ -54,11 +54,19 @@ namespace Cession.Geometries
 
         public static double CrossProduct(SplitVertex v1,SplitVertex v2,SplitVertex v3)
         {
-//            var vector1 = v2.ToPoint () - v1.ToPoint ();
-//            var vector2 = v2.ToPoint () - v3.ToPoint ();
-//            return vector1.CrossProduct (vector2);
-//            return v1.X * v2.Y - v1.Y * v2.X;
             return (v2.X - v1.X) * (v3.Y - v2.Y) - (v2.Y - v1.Y) * (v3.X - v2.X);
+        }
+
+        public List<SplitVertex> ToList()
+        {
+            List<SplitVertex> ps = new List<SplitVertex>();
+            SplitVertex current = this;
+            do
+            {
+                ps.Add(current);
+                current = current.Next;
+            } while (current != this);
+            return ps;
         }
     }
 
@@ -219,7 +227,10 @@ namespace Cession.Geometries
 
             var result = new List<List<SplitVertex>>();
             if (ins.Count == 0)
+            {
+                result.Add(polygon.ToList());
                 return result;
+            }
 
             //phase 2
             current = ins[0];
