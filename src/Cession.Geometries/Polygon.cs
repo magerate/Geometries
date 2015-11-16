@@ -29,16 +29,50 @@ namespace Cession.Geometries
             return Rect.FromLTRB (left, top, right, bottom);
         }
 
-        public static bool IsClockwise (IReadOnlyList<Point> polygon)
+        //true clockwise false counterclockwise null means not a valid polygon
+        public static bool? IsClockwise (IReadOnlyList<Point> polygon)
         {
-            double signedArea = 0;
+            if (null == polygon)
+                return null;
+
+            if (polygon.Count < 3)
+                return null;
+
+            int pc = 0;
+            int nc = 0;
             for (int i = 0; i < polygon.Count; i++)
             {
                 Point p1 = polygon [i];
                 Point p2 = polygon [(i + 1) % polygon.Count];
-                signedArea += (p1.X * p2.Y - p2.X * p1.Y);
+                double crossProduct = p1.X * p2.Y - p2.X * p1.Y;
+                if (crossProduct > 0)
+                    pc++;
+                else if (crossProduct < 0)
+                    nc++;
             }
-            return signedArea > 0;
+
+            if (pc == 0 && nc == 0)
+                return null;
+            return pc > 0;
+        }
+
+        public static bool IsConvex(IReadOnlyList<Point> polygon)
+        {
+            double pcp = 1;
+            for (int i = 0; i < polygon.Count; i++)
+            {
+                Point p1 = polygon[i];
+                Point p2 = polygon[(i + 1) % polygon.Count];
+                var cp = p1.X * p2.Y - p2.X * p1.Y;
+                if(cp != 0)
+                {
+                    if (cp * pcp < 0)
+                        return false;
+                    else
+                        pcp = cp;
+                }
+            }
+            return true;
         }
 
         public static bool Contains (Point point, IReadOnlyList<Point> polygon)
