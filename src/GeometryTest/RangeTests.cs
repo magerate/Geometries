@@ -17,11 +17,11 @@ namespace GeometryTest
 			Assert.True(Range.Contains(1,double.PositiveInfinity,double.MaxValue));
 		}
 
-		[Test]
-		[ExpectedException(typeof(ArgumentException))]
-		public void ContainsTest3(){
-			Assert.True(Range.Contains(1,double.NaN,double.MaxValue));
-		}
+		//[Test]
+		//[ExpectedException(typeof(ArgumentException))]
+		//public void ContainsTest3(){
+		//	Assert.True(Range.Contains(1,double.NaN,double.MaxValue));
+		//}
 
 		[Test]
 		public void ContainsTest4(){
