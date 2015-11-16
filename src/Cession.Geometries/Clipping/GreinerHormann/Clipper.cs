@@ -89,6 +89,13 @@ namespace Cession.Geometries.Clipping.GreinerHormann
             return Clip(subject, clip, ClipType.Difference);
         }
 
+        public static List<List<Vertex>> Split(Vertex subject,Vertex polyline)
+        {
+            return null;
+        }
+
+        //public static void 
+
         public static List<List<Vertex>> Clip(Vertex subject, Vertex clip, ClipType clipType)
         {
             bool isIntersect = false;
