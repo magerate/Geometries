@@ -174,6 +174,14 @@ namespace Cession.Geometries
                                 end = end.Next;
                             } while (!end.IsIntersect);
                             polygon.Add (end);
+
+                            var ind = intersections.IndexOf(end);
+                            if (index2 > index1)
+                                ind--;
+                            else
+                                ind++;
+                            if(end != stop)
+                                end = intersections[ind];
                         }
                         else
                             end = end.Next;
